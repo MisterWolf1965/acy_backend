@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="utf-8"?>
+<extension type="plugin" group="system" method="upgrade">
+    <name>plg_system_customcode</name>
+    <version>1.0.0</version>
+    <description>Custom Code Plugin for Joomla Backend</description>
+    <files>
+        <file plugin="plg_system_customcode">acy_backend.php</file>
+        <file>helper.php</file>
+    </files>
+</extension>
