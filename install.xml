@@ -1,8 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <extension type="plugin" group="system" method="upgrade">
-    <name>plg_system_customcode</name>
+    <name>ACY Mailing Backend - Modify</name>
+    <author>Joomla! Project</author>
+    <creationDate>FEBRUARY 2025</creationDate>
+    <copyright>Copyright (C) 2005 - 2018 Open Source Matters. All rights reserved.</copyright>
+    <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
+    <authorEmail>admin@joomla.org</authorEmail>
+    <authorUrl>www.joomla.org</authorUrl>
     <version>1.0.0</version>
-    <description>Custom Code Plugin for Joomla Backend</description>
+    <description>Modifies ACY MAiling Backend for User</description>
     <files>
         <file plugin="plg_system_customcode">acy_backend.php</file>
         <file>helper.php</file>
