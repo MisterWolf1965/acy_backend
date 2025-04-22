@@ -1,16 +1,24 @@
 <?xml version="1.0" encoding="utf-8"?>
-<extension type="plugin" group="system" method="upgrade">
-    <name>ACY Mailing Backend - Modify</name>
-    <author>Joomla! Project</author>
-    <creationDate>FEBRUARY 2025</creationDate>
-    <copyright>Copyright (C) 2005 - 2018 Open Source Matters. All rights reserved.</copyright>
-    <license>GNU General Public License version 2 or later; see LICENSE.txt</license>
-    <authorEmail>admin@joomla.org</authorEmail>
-    <authorUrl>www.joomla.org</authorUrl>
+<extension type="plugin" group="system" version="4.0">
+    <name>System - CustomCode</name>
+    <author>Your Name</author>
     <version>1.0.0</version>
-    <description>Modifies ACY MAiling Backend for User</description>
+    <creationDate>2025-02-10</creationDate>
+    <description>Custom Joomla Plugin for User-Specific Modifications</description>
     <files>
-        <file plugin="plg_system_customcode">acy_backend.php</file>
-        <file>helper.php</file>
+        <filename plugin="customcode">customcode.php</filename>
     </files>
+    <config>
+        <fields name="params">
+            <fieldset name="basic">
+                <field name="plugin_description" type="spacer" label="Custom Joomla Plugin"
+                       description="Select a user who will have notifications hidden." />
+                <field name="selected_user" type="user" label="Select User"
+                       description="Choose the user for whom the notification will be hidden." />
+                <field name="selected_class" type="text" label="CSS Class to Hide"
+                       description="Enter the CSS classes to be hidden separated with a comma(e.g., .acym__header__notification)." default=".acym__header__notification" />
+            </fieldset>
+        </fields>
+    </config>
 </extension>
+
