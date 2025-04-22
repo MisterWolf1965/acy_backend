@@ -1,55 +1,76 @@
 <?php
-defined('_JEXEC') or die;
 
-class plgSystemCustomCode extends JPlugin
+use Joomla\CMS\Factory;
+use Joomla\CMS\Plugin\CMSPlugin;
+use Joomla\CMS\Log\Log;
+
+class plgSystemCustomCode extends CMSPlugin
 {
-    public function onAfterDispatch()
+    private function logMessage($message)
     {
-        // Ensure we are in the Joomla administrator area
-        if ($this->isAdmin()) {
-            // Add a script to log that the plugin was triggered
-            JFactory::getDocument()->addScriptDeclaration('console.log("Custom Code Plugin Triggered");');
+        Log::add($message, Log::INFO, 'custom_plugin');
+    }
 
-            // Get the current user
-            $user = JFactory::getUser();
+    public function onAfterInitialise()
+    {
+        $app = Factory::getApplication();
 
-            // Log the current user's name to verify it's working
-            JFactory::getDocument()->addScriptDeclaration('
-                var currentUser = "' . $user->username . '";
-                console.log("Current user: " + currentUser);
-                
-                // Check if the logged-in user is "upabsch"
-                if (currentUser === "upabsch") {
-                    document.addEventListener("DOMContentLoaded", function() {
-                        console.log("DOM fully loaded");
+        // Ensure this runs only in the administrator panel
+        if (!$app->isClient('administrator')) {
+            $this->logMessage("Plugin aborted: Not in admin panel");
+            return;
+        }
 
-                        var cells = document.querySelectorAll(".acym__header__notification");
-                        console.log("Found " + cells.length + " .acym__header__notification elements");
+        // Log execution
+        //$this->logMessage("Custom Joomla Plugin is executing");
+        //$app->enqueueMessage('Custom Joomla Plugin is executing', 'notice');
 
-                        if (cells.length > 0) {
-                            cells.forEach(function(cell) {
-                                cell.style.display = "none";
-                                console.log("Hiding element: ", cell);
-                            });
-                        } else {
-                            console.log("No elements with the class .acym__header__notification found.");
-                        }
-                    });
-                } else {
-                    console.log("User is not upabsch, no changes made.");
+        // Get the selected user from plugin parameters
+        $selectedUserId = (int) $this->params->get('selected_user', 0);
+        $selectedUser = Factory::getUser($selectedUserId)->username;
+        $this->logMessage("Selected user from settings: $selectedUser (ID: $selectedUserId)");
+
+        // Get the selected class from plugin parameters
+        $selectedClass = trim($this->params->get('selected_class', '.acym__header__notification'));
+        if (empty($selectedClass)) {
+            $selectedClass = '.acym__header__notification'; // Default fallback
+        }
+        $this->logMessage("Selected class from settings: $selectedClass");
+
+        // Get the current logged-in user
+        $user = Factory::getUser();
+        $username = $user->username;
+        $this->logMessage("Logged in as: $username");
+
+        // Check if the logged-in user matches the selected user
+        if ($selectedUserId > 0 && $username === $selectedUser) {
+            $this->logMessage("User match: $selectedUser");
+            $doc = Factory::getDocument();
+            $doc->addScriptDeclaration("document.addEventListener('DOMContentLoaded', function() {
+                console.log('Custom Joomla Plugin Loaded');
+
+                function hideElements() {
+                    var cells = document.querySelectorAll('$selectedClass');
+                    console.log('Found ' + cells.length + ' elements with class $selectedClass');
+
+                    if (cells.length > 0) {
+                        cells.forEach(function(cell) {
+                            cell.style.display = 'none';
+                            console.log('Hiding element: ', cell);
+                        });
+
+                        var observer = new MutationObserver(hideElements);
+                        observer.observe(document.body, { childList: true, subtree: true });
+                    } else {
+                        console.log('No elements found with class $selectedClass');
+                    }
                 }
-            ');
+
+                // Initial execution with delay
+                setTimeout(hideElements, 1000);
+            });");
+        } else {
+            $this->logMessage("User does not match, skipping script");
         }
     }
-
-    /**
-     * Check if we are in the Joomla admin panel
-     *
-     * @return bool True if in admin panel, false otherwise
-     */
-    private function isAdmin()
-    {
-        return JFactory::getApplication()->isAdmin();
-    }
 }
-?>
