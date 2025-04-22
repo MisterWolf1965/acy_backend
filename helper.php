@@ -1,6 +1,8 @@
 <?php
 defined('_JEXEC') or die;
 
+use Joomla\CMS\Factory;
+
 class plgSystemCustomCodeHelper
 {
     /**
@@ -10,7 +12,7 @@ class plgSystemCustomCodeHelper
      */
     public static function getLoggedInUser()
     {
-        $user = JFactory::getUser();
+        $user = Factory::getUser();
         return $user->guest ? '' : $user->username; // Return username or empty if guest
     }
 }
